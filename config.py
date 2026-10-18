@@ -19,7 +19,7 @@ API_MODEL = os.environ.get("CAPTAIN_API_MODEL", "gemma-3-27b-it")
 API_KEY_ENV = "CAPTAIN_API_KEY"
 CAPTAIN_PERIOD_S = 4.0                 # seconds between captain calls
 CAPTAIN_TIMEOUT_S = 20.0               # HTTP timeout per call (gemma3:4b on CPU takes ~9 s; gemma3:1b ~3 s)
-CAPTAIN_STALE_S = 15.0                 # print CAPTAIN STALE after this long without a valid reply
+CAPTAIN_STALE_S = 20.0                 # print CAPTAIN STALE after this long without a valid reply
 CAPTAIN_MAX_TOKENS = 80                # cap the reply length so a rambling model cannot stall the loop
 
 # --- Sim ---
