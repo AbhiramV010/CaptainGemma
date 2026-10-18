@@ -229,7 +229,7 @@ class Display:
         y = 530
         cap = self.info.get("captain_age")
         uno = self.info.get("uno")
-        bits = [f"t {s['time']:6.1f}s"]
+        bits = [f"t {s['time']:6.1f}s", f"wind {s.get('wind_kts', 0):4.1f}kt" + ("  GUST" if s.get("gust") else "")]
         if cap is not None:
             bits.append(f"captain {cap:4.1f}s ago" + ("  STALE" if cap > config.CAPTAIN_STALE_S else ""))
         if uno is not None:

@@ -60,3 +60,8 @@ On `C` the firmware drives pin 12 HIGH for two 150 ms beeps with a 150 ms gap. I
 A push button between pin 2 and GND (internal pull-up, no resistor needed). Each press makes the Uno send `K` to the
 laptop. `main.py` then applies full rudder (`RUDDER_KICK`) for one second (`RUDDER_KICK_S`), alternating sides each press,
 so the sim plane yaws about 10° and the yaw stepper swings with it. Console prints `RUDDER KICK`.
+
+## Weather
+
+Always on, set in `config.py`: an 18 kt wind from 030, MIL-STD-1797 turbulence at severity 4, and random 3 s gusts of up to
+15 kt every 6 to 14 s. The captain sees `wind_kts` and `gust` in its state, and the window shows the wind in the status row.

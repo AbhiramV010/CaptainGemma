@@ -1,7 +1,12 @@
 """JSBSim c172x at 50 Hz with a PID autopilot and attitude-to-servo mapping."""
+import math
+import random
+
 import jsbsim
 
 import config
+
+KT2FPS = 1.6878
 
 
 def clamp(v, lo, hi):
@@ -68,7 +73,41 @@ class Sim:
             self.speed_pid.i = self.trim_throttle / self.speed_pid.ki   # start at trim throttle
         self.kick_until = -1.0
         self.kick_sign = 1.0
+        self._weather_on()
         self.state = self.read()
+
+    # --- weather ------------------------------------------------------------
+    def _weather_on(self):
+        """Steady wind plus MIL-STD turbulence, always on. Gusts are added in step()."""
+        f = self.fdm
+        rad = math.radians(config.WIND_FROM_DEG)
+        v = config.WIND_KTS * KT2FPS
+        f["atmosphere/wind-north-fps"] = -v * math.cos(rad)      # wind FROM north blows south
+        f["atmosphere/wind-east-fps"] = -v * math.sin(rad)
+        f["atmosphere/turb-type"] = 3                             # 3 = MIL-STD-1797 model
+        f["atmosphere/turbulence/milspec/windspeed_at_20ft_AGL-fps"] = config.TURB_WIND_20FT_FPS
+        f["atmosphere/turbulence/milspec/severity"] = config.TURB_SEVERITY
+        self.next_gust = random.uniform(*config.GUST_EVERY_S)
+        self.gust_end = -1.0
+        self.gust_vec = (0.0, 0.0, 0.0)
+
+    def _gusts(self, t):
+        f = self.fdm
+        if t >= self.next_gust:
+            g = config.GUST_KTS * KT2FPS * random.uniform(0.5, 1.0)
+            a = random.uniform(0, 2 * math.pi)
+            self.gust_vec = (g * math.cos(a), g * math.sin(a), random.uniform(-0.6, 0.6) * g)
+            self.gust_end = t + config.GUST_LEN_S
+            self.next_gust = t + random.uniform(*config.GUST_EVERY_S)
+        if t < self.gust_end:
+            k = math.sin(math.pi * (self.gust_end - t) / config.GUST_LEN_S)   # smooth ramp up and down
+            f["atmosphere/gust-north-fps"] = self.gust_vec[0] * k
+            f["atmosphere/gust-east-fps"] = self.gust_vec[1] * k
+            f["atmosphere/gust-down-fps"] = self.gust_vec[2] * k
+        else:
+            f["atmosphere/gust-north-fps"] = 0.0
+            f["atmosphere/gust-east-fps"] = 0.0
+            f["atmosphere/gust-down-fps"] = 0.0
 
     def kick_rudder(self):
         """Pretend the pilot kicked the rudder: full deflection for RUDDER_KICK_S, alternating sides."""
@@ -94,6 +133,8 @@ class Sim:
             "alpha": f["aero/alpha-deg"],
             "stall": f["aero/alpha-deg"] > config.STALL_ALPHA_DEG,
             "agl": f["position/h-agl-ft"],
+            "gust": abs(f["atmosphere/gust-north-fps"]) + abs(f["atmosphere/gust-east-fps"]) > 1.0,
+            "wind_kts": math.hypot(f["atmosphere/total-wind-north-fps"], f["atmosphere/total-wind-east-fps"]) / KT2FPS,
             "crashed": f["position/h-agl-ft"] < config.CRASH_AGL_FT,
             "time": f["simulation/sim-time-sec"],
         }
@@ -120,6 +161,7 @@ class Sim:
         # speed -> throttle
         f["fcs/throttle-cmd-norm"] = self.speed_pid.step(self.target_speed - s["airspeed"], dt)
 
+        self._gusts(s["time"])
         f.run()
         self.state = self.read()
         return self.state

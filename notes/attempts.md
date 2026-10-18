@@ -22,3 +22,12 @@ One line per call: what failed and what to change.
 - 2026-10-18 17:36:54 OK (ollama, 13.6s): {"target_alt_ft": 4200, "target_heading_deg": 90, "target_speed_kts": 95, "callout": "Level flight is maintained."}
 - 2026-10-18 17:37:11 OK (ollama, 13.4s): {"target_alt_ft": 4312, "target_heading_deg": 92, "target_speed_kts": 86, "callout": "Maintain current airspeed."}
 - 2026-10-18 17:37:29 OK (ollama, 14.2s): {"target_alt_ft": 4500, "target_heading_deg": 90, "target_speed_kts": 80, "callout": "Maintain airspeed and heading."}
+- 2026-10-18 17:45:35 OK (ollama, 17.0s): {"target_alt_ft": 3500, "target_heading_deg": 90, "target_speed_kts": 105, "callout": "Maintain heading and airspeed."}
+- 2026-10-18 17:45:53 OK (ollama, 14.1s): {"target_alt_ft": 3600, "target_heading_deg": 90, "target_speed_kts": 90, "callout": "Level flight maintained."}
+- 2026-10-18 17:46:11 OK (ollama, 13.6s): {"target_alt_ft": 3900, "target_heading_deg": 90, "target_speed_kts": 90, "callout": "Maintain current airspeed."}
+- 2026-10-18 17:46:28 OK (ollama, 13.3s): {"target_alt_ft": 3618, "target_heading_deg": 90, "target_speed_kts": 88, "callout": "Continue maintaining airspeed."}
+- 2026-10-18 17:46:46 OK (ollama, 13.8s): {"target_alt_ft": 4200, "target_heading_deg": 88, "target_speed_kts": 98, "callout": "Maintain current heading and airspeed."}
+- 2026-10-18 17:47:04 OK (ollama, 14.4s): {"target_alt_ft": 4200, "target_heading_deg": 89, "target_speed_kts": 80, "callout": "Maintain airspeed and heading."}
+- 2026-10-18 17:47:22 OK (ollama, 14.1s): {"target_alt_ft": 4500, "target_heading_deg": 90, "target_speed_kts": 75, "callout": "Maintain airspeed and heading."}
+- 2026-10-18 17:47:41 OK (ollama, 14.8s): {"target_alt_ft": 4700, "target_heading_deg": 89, "target_speed_kts": 80, "callout": "Maintain airspeed and heading."}
+- 2026-10-18 17:48:00 OK (ollama, 14.4s): {"target_alt_ft": 4900, "target_heading_deg": 90, "target_speed_kts": 75, "callout": "Maintain current airspeed and heading."}

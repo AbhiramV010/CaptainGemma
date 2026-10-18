@@ -16,7 +16,8 @@ SYSTEM_PROMPT = (
     '{"target_alt_ft": int, "target_heading_deg": int, "target_speed_kts": int, "callout": str}. '
     "Keep altitude between 1500 and 6000 ft, speed between 70 and 120 kts, heading 0-359. "
     "Change targets gradually (at most 500 ft, 30 degrees, 10 kts per reply). If stall is true, "
-    "lower the target altitude and raise the target speed. The callout is one short sentence."
+    "lower the target altitude and raise the target speed. Expect strong wind, gusts and turbulence; "
+    "keep speed at or above 90 kts in rough air. The callout is one short sentence."
 )
 
 KEYS = ("target_alt_ft", "target_heading_deg", "target_speed_kts")
@@ -93,6 +94,8 @@ class Captain:
                 "pitch_deg": round(s["pitch"], 1),
                 "roll_deg": round(s["roll"], 1),
                 "stall": bool(s["stall"]),
+                "wind_kts": int(s.get("wind_kts", 0)),
+                "gust": bool(s.get("gust", False)),
             }
 
     def stale(self):

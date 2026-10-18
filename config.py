@@ -33,6 +33,14 @@ RUDDER_KICK_S = 1.0        # how long the kick lasts
 MIN_SPEED_KTS = 70         # below this the autopilot limits nose-up pitch
 CRASH_AGL_FT = 10.0        # below this height above ground the plane counts as crashed
 CRASH_RESET_S = 5.0        # reset the sim this long after a crash (0 = stay crashed)
+# --- Weather (always on; makes the captain and autopilot work for it) ---
+WIND_KTS = 18              # steady wind speed
+WIND_FROM_DEG = 30         # direction the wind blows from (true)
+TURB_SEVERITY = 4          # JSBSim MIL-STD-1797 turbulence, 0 calm .. 6 extreme
+TURB_WIND_20FT_FPS = 35    # reference wind for the turbulence model
+GUST_KTS = 15              # peak size of random gusts
+GUST_EVERY_S = (6, 14)     # random interval between gusts
+GUST_LEN_S = 3.0           # how long each gust lasts
 STALL_ALPHA_DEG = 15.0     # c172x lift curve flattens past ~0.26 rad (15°); verify before demo
 YAW_SCALE = 1.0            # Y = heading error × YAW_SCALE, clamped ±20
 
