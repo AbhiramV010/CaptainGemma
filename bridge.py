@@ -15,6 +15,8 @@ class Bridge:
         self.target = {"Y": 0, "P": 0, "R": 0}
         self.sent = {}
         self._crash_pending = False
+        self.kicks = 0                # count of "K" lines received; main.py watches for changes
+        self._rx = b""
         self._lock = threading.Lock()
         self._stop = threading.Event()
         self._last_retry = 0.0
@@ -37,6 +39,20 @@ class Bridge:
     def crash(self):
         """Ask the Uno to beep twice. Sent once, as soon as the port is up."""
         self._crash_pending = True
+
+    def _read(self):
+        """Drain incoming bytes; a 'K' line means the rudder button was pressed."""
+        try:
+            n = self.ser.in_waiting
+            if not n:
+                return
+            self._rx += self.ser.read(n)
+        except serial.SerialException:
+            return
+        while b"\n" in self._rx:
+            line, self._rx = self._rx.split(b"\n", 1)
+            if line.strip() == b"K":
+                self.kicks += 1
 
     @property
     def connected(self):
@@ -77,6 +93,7 @@ class Bridge:
                     self._last_retry = t0
                     self._connect()
             else:
+                self._read()
                 if self._crash_pending:
                     try:
                         self.ser.write(b"C\n")

@@ -66,7 +66,14 @@ class Sim:
         self.speed_pid = PID(**config.SPEED_PID)
         if self.speed_pid.ki:
             self.speed_pid.i = self.trim_throttle / self.speed_pid.ki   # start at trim throttle
+        self.kick_until = -1.0
+        self.kick_sign = 1.0
         self.state = self.read()
+
+    def kick_rudder(self):
+        """Pretend the pilot kicked the rudder: full deflection for RUDDER_KICK_S, alternating sides."""
+        self.kick_sign = -self.kick_sign
+        self.kick_until = self.state["time"] + config.RUDDER_KICK_S
 
     def set_targets(self, alt_ft=None, heading_deg=None, speed_kts=None):
         if alt_ft is not None:
@@ -108,7 +115,7 @@ class Sim:
         # heading -> roll -> aileron
         roll_cmd = self.hdg_pid.step(wrap180(self.target_heading - s["heading"]), dt)
         f["fcs/aileron-cmd-norm"] = self.roll_pid.step(roll_cmd - s["roll"], dt)
-        f["fcs/rudder-cmd-norm"] = 0.0
+        f["fcs/rudder-cmd-norm"] = self.kick_sign * config.RUDDER_KICK if s["time"] < self.kick_until else 0.0
 
         # speed -> throttle
         f["fcs/throttle-cmd-norm"] = self.speed_pid.step(self.target_speed - s["airspeed"], dt)

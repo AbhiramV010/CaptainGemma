@@ -13,6 +13,7 @@ def main():
     ap.add_argument("--no-captain", action="store_true", help="hold the start targets")
     ap.add_argument("--backend", choices=["ollama", "api"], default=config.CAPTAIN_BACKEND)
     ap.add_argument("--port", default=config.COM_PORT)
+    ap.add_argument("--no-gui", action="store_true", help="don't open the live physics window")
     ap.add_argument("--crash-test", action="store_true", help="dive into the ground to test the crash buzzer")
     args = ap.parse_args()
 
@@ -32,6 +33,11 @@ def main():
         captain.warm_up()
         captain.start()
 
+    display = None
+    if not args.no_gui:
+        from display import Display
+        display = Display(sim)
+
     bridge = None
     if not args.sim_only:
         from bridge import Bridge
@@ -44,6 +50,9 @@ def main():
     stale_printed = False
     crashes = 0
     crash_time = None
+    kicks_seen = 0
+    kick_until = 0.0
+    tick = 0
     t_start = time.time()
     try:
         while True:
@@ -55,10 +64,19 @@ def main():
                         sim.set_targets(alt_ft=-2000)
                     crash_time = None
                     print("SIM RESET")
+                if display:
+                    display.update(sim.state, crashed=True)
+                    if display.closed:
+                        break
                 next_tick = time.perf_counter()
                 time.sleep(dt)
                 continue
 
+            if bridge and bridge.kicks != kicks_seen:
+                kicks_seen = bridge.kicks
+                sim.kick_rudder()
+                kick_until = sim.kick_until
+                print("RUDDER KICK")
             s = sim.step()
             p, r, y = sim.servo_offsets()
             if s["crashed"]:
@@ -82,6 +100,16 @@ def main():
                         stale_printed = True
                 else:
                     stale_printed = False
+
+            tick += 1
+            if display and tick % 2 == 0:             # redraw at 25 Hz
+                display.update(s, crashed=False, kick=kick_until,
+                               callout=captain.target["callout"] if captain and captain.target else "",
+                               captain_age=(time.time() - captain.last_call) if captain and captain.last_call else None,
+                               uno=bridge.connected if bridge else None)
+                if display.closed:
+                    print("Window closed")
+                    break
 
             now = time.time()
             if now - last_print >= 1.0:

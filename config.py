@@ -28,6 +28,8 @@ AIRCRAFT = "c172x"
 START_ALT_FT = 3000
 START_HEADING_DEG = 90
 START_SPEED_KTS = 100
+RUDDER_KICK = 0.8          # rudder command (0-1) applied on a kick
+RUDDER_KICK_S = 1.0        # how long the kick lasts
 MIN_SPEED_KTS = 70         # below this the autopilot limits nose-up pitch
 CRASH_AGL_FT = 10.0        # below this height above ground the plane counts as crashed
 CRASH_RESET_S = 5.0        # reset the sim this long after a crash (0 = stay crashed)

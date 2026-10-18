@@ -3,7 +3,7 @@ INSTRUCTION.md
 .claude/
 .codex/
 .opencode/
-
+notes/
 # C/C++ build artifacts
 *.o
 *.obj

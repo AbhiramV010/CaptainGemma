@@ -54,3 +54,9 @@ On `C` the firmware drives pin 12 HIGH for two 150 ms beeps with a 150 ms gap. I
 - Wiring: buzzer `+` to pin 12, `-` to GND. An active buzzer works as is.
 - Passive buzzer: set `BUZZER_PASSIVE = true` in the sketch so it uses `tone()`.
 - Test: the `Test buzzer` button in `gui.py`, or `python main.py --crash-test` (dives into the ground in about 40 s).
+
+## Rudder-kick button
+
+A push button between pin 2 and GND (internal pull-up, no resistor needed). Each press makes the Uno send `K` to the
+laptop. `main.py` then applies full rudder (`RUDDER_KICK`) for one second (`RUDDER_KICK_S`), alternating sides each press,
+so the sim plane yaws about 10° and the yaw stepper swings with it. Console prints `RUDDER KICK`.

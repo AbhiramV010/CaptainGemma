@@ -7,6 +7,7 @@ Servo pitchS, rollS;
 
 const int PITCH_PIN     = 5;
 const int ROLL_PIN      = 6;
+const int KICK_PIN      = 2;     // button to GND (internal pull-up); press = rudder kick
 const int BUZZER_PIN    = 12;    // crash alarm: beeps twice on a "C" line
 const bool BUZZER_PASSIVE = false; // true for a passive buzzer (needs tone), false for active / plain signal
 const int BEEP_MS       = 150;   // length of each beep and each gap
@@ -28,6 +29,19 @@ unsigned long beepT = 0;
 void buzz(bool on) {
   if (BUZZER_PASSIVE) { if (on) tone(BUZZER_PIN, 2000); else noTone(BUZZER_PIN); }
   else digitalWrite(BUZZER_PIN, on ? HIGH : LOW);
+}
+
+// Rudder-kick button: debounced, sends "K" once per press
+int kickLast = HIGH;
+unsigned long kickT = 0;
+
+void readKick() {
+  int v = digitalRead(KICK_PIN);
+  if (v != kickLast && millis() - kickT > 50) {
+    kickT = millis();
+    kickLast = v;
+    if (v == LOW) Serial.println("K");
+  }
 }
 
 void startBeep() { beepPhase = 0; beepT = millis(); buzz(true); }
@@ -67,6 +81,7 @@ void setup() {
   rollS.attach(ROLL_PIN);
   pitchS.write(PITCH_NEUTRAL);
   rollS.write(ROLL_NEUTRAL);
+  pinMode(KICK_PIN, INPUT_PULLUP);
   pinMode(BUZZER_PIN, OUTPUT);
   buzz(false);
   Serial.println("READY");
@@ -74,6 +89,7 @@ void setup() {
 
 void loop() {
   readSerial();
+  readKick();
   updateBeep();
 
   if (yaw.targetPosition() != yawTargetSteps) yaw.moveTo(yawTargetSteps);
