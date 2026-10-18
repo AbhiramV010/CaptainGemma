@@ -1,5 +1,5 @@
 # Project-local / AI tooling
-instruction.md
+INSTRUCTION.md
 .claude/
 .codex/
 .opencode/
@@ -75,3 +75,8 @@ desktop.ini
 # Logs / temp
 *.log
 *.tmp
+
+# Python
+__pycache__/
+.venv/
+JSBout*.csv
