@@ -1,0 +1,77 @@
+# Project-local / AI tooling
+instruction.md
+.claude/
+.codex/
+.opencode/
+
+# C/C++ build artifacts
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.so.*
+*.dll
+*.dylib
+*.exe
+*.out
+*.app
+*.d
+*.gch
+*.pch
+*.lo
+*.la
+*.elf
+*.map
+*.lst
+build/
+bin/
+obj/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+CMakeUserPresets.json
+compile_commands.json
+Makefile.in
+
+# Arduino
+*.hex
+*.bin
+*.eep
+*.ino.cpp
+*.ino.with_bootloader.*
+.arduino/
+build-*/
+sketch.yaml.lock
+
+# arduino-cli / Arduino IDE 2.x
+.arduino15/
+Arduino15/
+
+# PlatformIO
+.pio/
+.pioenvs/
+.piolibdeps/
+.clang_complete
+.gcc-flags.json
+
+# Editors / IDEs
+.vscode/
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp
+*.log
+*.tmp
